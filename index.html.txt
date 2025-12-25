@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Cute MOU 💗</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Indie+Flower&family=Patrick+Hand&family=Sacramento&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- GLOBAL STYLES --- */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            /* Cute Polka Dot Background */
+            background-color: #ffe6f2;
+            background-image: radial-gradient(#ffb7b2 15%, transparent 16%),
+                              radial-gradient(#ffb7b2 15%, transparent 16%);
+            background-size: 30px 30px;
+            background-position: 0 0, 15px 15px;
+            
+            font-family: 'Patrick Hand', cursive;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- THE NOTEBOOK CONTAINER --- */
+        .book-container {
+            position: relative;
+            width: 340px;
+            height: 520px;
+            perspective: 1500px;
+            cursor: pointer;
+            transition: transform 0.5s;
+        }
+
+        .book-container:hover {
+            transform: scale(1.02);
+        }
+
+        /* --- BOOK COVER --- */
+        .cover {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 10px 20px 20px 10px;
+            box-shadow: 5px 10px 25px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            transform-origin: left;
+            transition: transform 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 10;
+            padding: 20px;
+            border-left: 15px solid #ff6b81; /* Spine */
+            backface-visibility: hidden; /* Hides back when flipped */
+        }
+
+        /* Entry Anime Cat on Cover */
+        .cover-cat {
+            width: 100px;
+            margin-bottom: 5px;
+            animation: bounce 2s infinite;
+        }
+
+        .photo-frame {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            padding: 5px;
+            background: white;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            margin-bottom: 10px;
+        }
+
+        .cover img.main-photo {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #ffb7b2;
+        }
+
+        .cover h1 {
+            color: #d63384;
+            font-family: 'Sacramento', cursive;
+            font-size: 2.8rem;
+            margin: 5px 0;
+            text-shadow: 1px 1px 2px white;
+        }
+
+        .click-hint {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 8px 18px;
+            border-radius: 30px;
+            color: #ff6b81;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            animation: pulse 1.5s infinite;
+        }
+
+        /* --- INSIDE PAGES --- */
+        .pages {
+            position: absolute;
+            top: 5px;
+            left: 0;
+            width: 96%;
+            height: 98%;
+            background: #fff9f0;
+            border-radius: 5px 15px 15px 5px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.05);
+            z-index: 1;
+            padding: 20px 15px 20px 45px;
+            overflow-y: auto;
+            opacity: 0;
+            transition: opacity 0.5s ease 0.6s;
+            
+            /* Lined Paper Effect */
+            background-image: 
+                linear-gradient(#e1e1e1 1px, transparent 1px),
+                linear-gradient(90deg, #ff6b81 1px, transparent 1px);
+            background-size: 100% 1.6rem, 30px 100%;
+            background-position: 0 1.6rem, 0 0;
+            line-height: 1.6rem;
+        }
+
+        /* Custom Scrollbar for cuteness */
+        .pages::-webkit-scrollbar { width: 5px; }
+        .pages::-webkit-scrollbar-thumb { background: #ffb7b2; border-radius: 10px; }
+
+        .pages p {
+            font-family: 'Indie Flower', cursive;
+            font-size: 1.15rem;
+            color: #444;
+            margin-bottom: 1.2rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .highlight {
+            color: #ff4757;
+            font-weight: bold;
+            background: linear-gradient(120deg, #ffd1dc 0%, #ffd1dc 100%);
+            background-repeat: no-repeat;
+            background-size: 100% 0.4em;
+            background-position: 0 88%;
+        }
+
+        /* --- ANIMATIONS & STATES --- */
+        .book-container.open .cover {
+            transform: rotateY(-160deg);
+        }
+
+        .book-container.open .pages {
+            opacity: 1;
+            z-index: 5;
+        }
+
+        /* --- STICKERS --- */
+        .sticker {
+            position: absolute;
+            pointer-events: none;
+            z-index: 20;
+            display: none; /* Hidden until opened */
+        }
+
+        /* Side Cat (Looking from left) */
+        .cat-side {
+            top: 50%;
+            left: -60px;
+            width: 80px;
+            transform: translateY(-50%);
+        }
+
+        /* Top Cat (Sleeping) */
+        .cat-top {
+            top: -50px;
+            right: 20px;
+            width: 90px;
+        }
+
+        /* Inside Dancing Cat */
+        .cat-dance {
+            display: block;
+            margin: 20px auto;
+            width: 100px;
+        }
+
+        /* Heart Rain */
+        .emoji-rain {
+            position: fixed;
+            top: -10vh;
+            font-size: 24px;
+            animation: fall linear forwards;
+            z-index: 100;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- AUDIO PLAYER -->
+    <!-- Sweet BGM: Replace URL if you want, but this is a cute loop -->
+    <audio id="bg-music" loop>
+        <source src="https://www.myinstants.com/media/sounds/cute-bgm-music.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- FLOATING BACKGROUND ELEMENTS -->
+    <div id="hearts-container"></div>
+
+    <div class="book-container" onclick="openBook()">
+        
+        <!-- FRONT COVER -->
+        <div class="cover">
+            <!-- ENTRY ANIME CAT -->
+            <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExbXN5eHh5Z3V6Y3Z6aHZ5eGZ5eHh5Z3V6Y3Z6aHZ5eGZ5eHh5Z3V6/LqVd3c8N4u1wF5g5fE/giphy.gif" class="cover-cat" alt="Giving Heart Cat">
+            
+            <div class="photo-frame">
+                <!-- IMPORTANT: Photo name MUST be mou.jpg -->
+                <img src="mou.jpg" class="main-photo" alt="My MOU" onerror="this.src='https://i.pinimg.com/736x/c0/78/7f/c0787f2409f5f085e94e229c2c226458.jpg'"> 
+            </div>
+            
+            <h1>For My MOU 💗</h1>
+            <p style="color:white; font-size:1.2rem;">✨ 1 Year Together ✨</p>
+            
+            <div class="click-hint">Tap to Open Gift 🎁</div>
+        </div>
+
+        <!-- INSIDE PAGES -->
+        <div class="pages">
+            <!-- Small Corner Sticker -->
+            <img src="https://media.giphy.com/media/Vi0Ws3t4JSLOgdkaBq/giphy.gif" style="width:60px; float:right; margin-bottom:10px;" alt="Sparkle Cat">
+
+            <p class="highlight" style="font-size:1.4rem; text-align:center;">✨ Happy Anniversary ✨</p>
+            
+            <p>
+                My dearest MOU, <br>
+                Aaj ka din mere liye bohot special hai ❤️. Aaj hi ke din hum pehli baar mile the aur uss ek "Hello" ne meri puri duniya badal di 🌍.
+            </p>
+            
+            <p>
+                Main khud ko duniya ka sabse lucky insaan maanta hu kyunki tum mere paas ho 🍀. Tum sirf meri girlfriend nahi, meri <span class="highlight">healing</span> ho.
+            </p>
+            
+            <p>
+                Tumhari wo cute si smile, tumhara gussa, aur tumhara dher saara pyaar... mujhe sab kuch pasand hai. <b style="color:#d63384">I love you so much!</b>
+            </p>
+            
+            <p>
+                Promise karta hu, chahe kuch bhi ho jaye, main hamesha tumhare saath rahunga. Like a shadow, hamesha tumhare peeche 🐱.
+            </p>
+            
+            <p style="text-align:center; margin-top:30px;">
+                Happy 1 Year baby! 🌸<br>
+                ~ Yours Forever
+            </p>
+
+            <!-- Dancing Cat at Bottom -->
+            <img src="https://media.giphy.com/media/GeimqsH0TLDt4tScGw/giphy.gif" class="cat-dance" alt="Happy Cat">
+        </div>
+
+        <!-- OUTSIDE FLOATING STICKERS -->
+        <img src="https://media.giphy.com/media/B2VqF5plJbJbq/giphy.gif" class="sticker cat-side" alt="Peeking Cat">
+        <img src="https://media.giphy.com/media/13CoXDiaCcCzp6/giphy.gif" class="sticker cat-top" alt="Sleeping Cat">
+
+    </div>
+
+    <script>
+        function openBook() {
+            const book = document.querySelector('.book-container');
+            const music = document.getElementById('bg-music');
+            const stickers = document.querySelectorAll('.sticker');
+            
+            // Check if already open to prevent double clicks
+            if (!book.classList.contains('open')) {
+                book.classList.add('open');
+                
+                // Play Music (Set volume softer)
+                music.volume = 0.5; 
+                music.play().then(() => {
+                    console.log("Music playing!");
+                }).catch(e => {
+                    console.log("Tap required for audio");
+                });
+
+                // Show outside stickers with a little delay
+                setTimeout(() => {
+                    stickers.forEach(s => s.style.display = 'block');
+                }, 400);
+
+                // Start Heart Rain Effect
+                for(let i=0; i<30; i++) {
+                    setTimeout(createHeart, i * 200);
+                }
+            }
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('emoji-rain');
+            // Random cute emojis
+            const emojis = ['💗', '✨', '🐱', '🌸', '💖'];
+            heart.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = Math.random() * 2 + 3 + 's';
+            
+            document.getElementById('hearts-container').appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
